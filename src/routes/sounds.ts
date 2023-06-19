@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
 
 import { prisma } from "../db";
+import { formatResponse } from "../util/formatResponse";
 
 const createSound = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -8,7 +9,7 @@ const createSound = async (req: Request, res: Response, next: NextFunction) => {
       data: { sellerId: 1, ...req.body },
     });
 
-    res.json({ newSound });
+    formatResponse(res, newSound);
   } catch (error: any) {
     next(error.message);
   }
@@ -21,7 +22,7 @@ const getAllSounds = async (
 ) => {
   try {
     const allSounds = await prisma.sound.findMany();
-    res.json({ allSounds });
+    formatResponse(res, allSounds);
   } catch (error: any) {
     next(error.message);
   }
@@ -39,7 +40,7 @@ const getSoundById = async (
       },
     });
 
-    res.json({ singleSound });
+    formatResponse(res, singleSound);
   } catch (error: any) {
     next(error.message);
   }
@@ -53,7 +54,7 @@ const updateSound = async (req: Request, res: Response, next: NextFunction) => {
       },
       data: req.body,
     });
-    res.json({ updatedSound });
+    formatResponse(res, updatedSound);
   } catch (error: any) {
     next(error.message);
   }
@@ -67,16 +68,20 @@ const deleteSound = async (req: Request, res: Response, next: NextFunction) => {
       },
     });
 
-    res.sendStatus(200);
+    formatResponse(res, null, "Sound deleted");
   } catch (error: any) {
     next(error.message);
   }
 };
 
-export const handleSoundsRoutes = (router: Router) => {
-  router.post("/sounds", createSound);
-  router.get("/sounds", getAllSounds);
-  router.get("/sounds/:id", getSoundById);
-  router.put("/sounds/:id", updateSound);
-  router.delete("/sounds/:id", deleteSound);
+export const handleSoundsRoutes = () => {
+  const router = Router();
+
+  router.post("/", createSound);
+  router.get("/", getAllSounds);
+  router.get("/:id", getSoundById);
+  router.put("/:id", updateSound);
+  router.delete("/:id", deleteSound);
+
+  return router;
 };
