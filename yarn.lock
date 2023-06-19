@@ -873,6 +873,11 @@ safe-buffer@5.2.1, safe-buffer@~5.2.0:
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
+schemix@^1.14.0:
+  version "1.14.0"
+  resolved "https://registry.yarnpkg.com/schemix/-/schemix-1.14.0.tgz#ba06341d7fa8d9d9fafc815ac1c715eeb7c25d1e"
+  integrity sha512-BAybrHb3Gh+bv+d9O8XXT/IaraJ1CLfnzE4e2Smi7GCa9Fe1KwOzKTK2PwJGVOgwV0uBQ+3BXb50zCRC12W7+g==
+
 semver@^6.0.0:
   version "6.3.0"
   resolved "https://registry.yarnpkg.com/semver/-/semver-6.3.0.tgz#ee0a64c8af5e8ceea67687b133761e1becbd1d3d"

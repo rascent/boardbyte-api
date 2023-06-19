@@ -1,8 +1,8 @@
-import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response, Router } from "express";
 
+import { prisma } from "../db";
+
 const createSound = async (req: Request, res: Response, next: NextFunction) => {
-  const prisma = new PrismaClient();
   try {
     const newSound = await prisma.sound.create({
       data: { sellerId: 1, ...req.body },
@@ -19,7 +19,6 @@ const getAllSounds = async (
   res: Response,
   next: NextFunction
 ) => {
-  const prisma = new PrismaClient();
   try {
     const allSounds = await prisma.sound.findMany();
     res.json({ allSounds });
@@ -33,7 +32,6 @@ const getSoundById = async (
   res: Response,
   next: NextFunction
 ) => {
-  const prisma = new PrismaClient();
   try {
     const singleSound = await prisma.sound.findUnique({
       where: {
@@ -48,7 +46,6 @@ const getSoundById = async (
 };
 
 const updateSound = async (req: Request, res: Response, next: NextFunction) => {
-  const prisma = new PrismaClient();
   try {
     const updatedSound = await prisma.sound.update({
       where: {
@@ -63,7 +60,6 @@ const updateSound = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const deleteSound = async (req: Request, res: Response, next: NextFunction) => {
-  const prisma = new PrismaClient();
   try {
     await prisma.sound.delete({
       where: {

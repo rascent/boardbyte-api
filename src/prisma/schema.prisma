@@ -1,45 +1,42 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+datasource database {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
 
 generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
-  provider = "mongodb"
-  url      = env("DATABASE_URL")
+enum Role {
+  User
+  Admin
 }
 
 model User {
-  id            String     @id @default(auto()) @map("_id") @db.ObjectId
-  email         String     @unique
-  name          String
-  password      String?
-  provider      String?
-  providerId    String?
-  picture       String?
-  refreshToken  String?
-  role          Role       @default(User)
-  sound         Sound[]
+  id           String  @id @default(auto()) @map("_id") @database.ObjectId
+  email        String  @unique
+  name         String
+  password     String?
+  provider     String?
+  providerId   String?
+  picture      String?
+  refreshToken String?
+  role         Role    @default(User)
+  sounds       Sound[]
 
   @@map("users")
 }
 
 model Sound {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @id @default(auto()) @map("_id") @database.ObjectId
   title     String
-  imageURL  String
-  selling   Boolean  @default(false)
-  seller    User     @relation(fields: [sellerId], references: [id])
-  sellerId  String   @db.ObjectId
-  soundURL  String
+  imageURL  String?
+  selling   Boolean
+  soundURL  String?
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String   @database.ObjectId
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("sounds")
-}
-
-enum Role {
-  User
-  Admin
 }

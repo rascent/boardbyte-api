@@ -1,10 +1,9 @@
 import * as bcrypt from "bcrypt";
-
-import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response, Router } from "express";
 
+import { prisma } from "../db";
+
 const users = async (req: Request, res: Response, next: NextFunction) => {
-  const prisma = new PrismaClient();
   try {
     const allUsers = await prisma.user.findMany();
     res.json(allUsers);
@@ -14,7 +13,6 @@ const users = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const login = async (req: Request, res: Response, next: NextFunction) => {
-  const prisma = new PrismaClient();
   try {
     const user = await prisma.user.findUnique({
       where: {
@@ -46,7 +44,6 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const register = async (req: Request, res: Response, next: NextFunction) => {
-  const prisma = new PrismaClient();
   try {
     const user = await prisma.user.findUnique({
       where: {
