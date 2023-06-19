@@ -1,9 +1,10 @@
 import "dotenv/config";
 import express, { Router } from "express";
-import { handleProductsRoutes } from "./routes/products";
+import { handleRoutes } from "./router";
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3010;
+const router = Router();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -12,6 +13,4 @@ app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });
 
-const router = Router();
-
-handleProductsRoutes(router);
+app.use("/api", handleRoutes(router));

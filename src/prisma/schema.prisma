@@ -11,27 +11,35 @@ datasource db {
 }
 
 model User {
-  id       String     @id @default(auto()) @map("_id") @db.ObjectId
-  email    String     @unique
-  name     String?
-  role     Role       @default(User)
-  products Products[]
+  id            String     @id @default(auto()) @map("_id") @db.ObjectId
+  email         String     @unique
+  name          String
+  password      String?
+  provider      String?
+  providerId    String?
+  picture       String?
+  refreshToken  String?
+  role          Role       @default(User)
+  sound         Sound[]
+
+  @@map("users")
 }
 
-model Products {
+model Sound {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   title     String
   imageURL  String
   selling   Boolean  @default(false)
   seller    User     @relation(fields: [sellerId], references: [id])
   sellerId  String   @db.ObjectId
+  soundURL  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("sounds")
 }
 
 enum Role {
   User
   Admin
-  Buyer
-  Seller
 }
