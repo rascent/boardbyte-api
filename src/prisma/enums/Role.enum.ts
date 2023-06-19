@@ -1,5 +1,5 @@
-import { createEnum } from "schemix";
+import { createEnum } from 'schemix';
 
 export default createEnum((RoleEnum) => {
-  RoleEnum.addValue("User").addValue("Admin");
+  RoleEnum.addValue('User').addValue('Admin');
 });

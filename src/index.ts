@@ -1,7 +1,7 @@
-import "dotenv/config";
-import express, { Router } from "express";
-import { handleRoutes } from "./router";
-import { errorHandler } from "./middlewares/errorHandler";
+import 'dotenv/config';
+import express, { Router } from 'express';
+import { handleRoutes } from './router';
+import { errorHandler } from './middlewares/errorHandler';
 
 const startServer = async () => {
   const app = express();
@@ -14,7 +14,7 @@ const startServer = async () => {
     console.log(`App listening on port ${PORT}`);
   });
 
-  app.use("/api", handleRoutes());
+  app.use('/api', handleRoutes());
 
   app.use(errorHandler);
 };

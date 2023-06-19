@@ -1,7 +1,7 @@
-import { NextFunction, Request, Response, Router } from "express";
+import { NextFunction, Request, Response, Router } from 'express';
 
-import { prisma } from "../db";
-import { formatResponse } from "../util/formatResponse";
+import { prisma } from '../db';
+import { formatResponse } from '../util/formatResponse';
 
 const createSound = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -15,11 +15,7 @@ const createSound = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const getAllSounds = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getAllSounds = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const allSounds = await prisma.sound.findMany();
     formatResponse(res, allSounds);
@@ -28,11 +24,7 @@ const getAllSounds = async (
   }
 };
 
-const getSoundById = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getSoundById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const singleSound = await prisma.sound.findUnique({
       where: {
@@ -68,7 +60,7 @@ const deleteSound = async (req: Request, res: Response, next: NextFunction) => {
       },
     });
 
-    formatResponse(res, null, "Sound deleted");
+    formatResponse(res, null, 'Sound deleted');
   } catch (error: any) {
     next(error.message);
   }
@@ -77,11 +69,11 @@ const deleteSound = async (req: Request, res: Response, next: NextFunction) => {
 export const handleSoundsRoutes = () => {
   const router = Router();
 
-  router.post("/", createSound);
-  router.get("/", getAllSounds);
-  router.get("/:id", getSoundById);
-  router.put("/:id", updateSound);
-  router.delete("/:id", deleteSound);
+  router.post('/', createSound);
+  router.get('/', getAllSounds);
+  router.get('/:id', getSoundById);
+  router.put('/:id', updateSound);
+  router.delete('/:id', deleteSound);
 
   return router;
 };

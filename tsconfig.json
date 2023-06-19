@@ -3,8 +3,16 @@
     "lib": ["esnext"],
     "module": "CommonJS",
     "outDir": "./dist",
+    /* Strict Type-Checking Options */
     "strict": true,
-    "esModuleInterop": true
+    "noImplicitAny": true,
+    /* Module Resolution Options */
+    "moduleResolution": "node",
+    "baseUrl": "./src",
+    "esModuleInterop": true,
+    /* Advanced Options */
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
   },
   "exclude": ["node_modules", "dist", "src/prisma"]
 }

@@ -1,12 +1,7 @@
-import { Response } from "express";
-import { ResponseType } from "../types/response";
+import { Response } from 'express';
+import { ResponseType } from '../types/response';
 
-export const formatResponse = (
-  res: Response,
-  data?: any,
-  message?: string,
-  success?: boolean
-): void => {
+export const formatResponse = (res: Response, data?: any, message?: string, success?: boolean): void => {
   const response: ResponseType = {
     success: success ?? true,
     message: message ?? null,

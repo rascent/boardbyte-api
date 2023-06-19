@@ -1,9 +1,9 @@
-import * as bcrypt from "bcrypt";
-import { NextFunction, Request, Response, Router } from "express";
+import * as bcrypt from 'bcrypt';
+import { NextFunction, Request, Response, Router } from 'express';
 
-import { prisma } from "../db";
-import { formatResponse } from "../util/formatResponse";
-import { User } from "@prisma/client";
+import { prisma } from '../db';
+import { formatResponse } from '../util/formatResponse';
+import { User } from '@prisma/client';
 
 const users = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -17,7 +17,7 @@ const users = async (req: Request, res: Response, next: NextFunction) => {
 const login = async (
   req: Request<unknown, unknown, { email: string; password: string }>,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const user = await prisma.user.findUnique({
@@ -28,22 +28,19 @@ const login = async (
 
     if (!user) {
       res.status(404);
-      throw new Error("User not found");
+      throw new Error('User not found');
     }
 
     if (!user.password) {
       res.status(401);
-      throw new Error("User registered with social login");
+      throw new Error('User registered with social login');
     }
 
-    const passwordMatch = await bcrypt.compare(
-      req.body.password,
-      user.password
-    );
+    const passwordMatch = await bcrypt.compare(req.body.password, user.password);
 
     if (!passwordMatch) {
       res.status(401);
-      throw new Error("Password does not match");
+      throw new Error('Password does not match');
     }
 
     formatResponse(res, user);
@@ -61,7 +58,7 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
     });
 
     if (user) {
-      throw new Error("User already exists");
+      throw new Error('User already exists');
     }
 
     const newUser = await prisma.user.create({
@@ -81,9 +78,9 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
 export const handlleAuthRoutes = () => {
   const router = Router();
 
-  router.get("/users", users);
-  router.post("/login", login);
-  router.post("/register", register);
+  router.get('/users', users);
+  router.post('/login', login);
+  router.post('/register', register);
 
   return router;
 };
