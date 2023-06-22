@@ -3,7 +3,6 @@ import { NextFunction, Request, Response, Router } from 'express';
 
 import { prisma } from '../db';
 import { formatResponse } from '../util/formatResponse';
-import { User } from '@prisma/client';
 
 const users = async (req: Request, res: Response, next: NextFunction) => {
   try {

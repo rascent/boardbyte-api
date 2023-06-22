@@ -9,12 +9,12 @@
     "dev": "tsc-watch --onSuccess \"node ./dist/index.js\"",
     "watch": "npx ts-node src/index.ts",
     "build": "tsc",
-    "schemix": "npx ts-node src/prisma/index.ts",
+    "schemix": "npx ts-node prisma/index.ts",
     "prepare": "husky install"
   },
   "prisma": {
-    "schema": "src/prisma/schema.prisma",
-    "seed": "ts-node src/prisma/seed.ts"
+    "schema": "prisma/schema.prisma",
+    "seed": "ts-node prisma/seed.ts"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",

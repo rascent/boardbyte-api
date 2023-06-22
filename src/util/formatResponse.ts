@@ -1,15 +1,15 @@
 import { Response } from 'express';
 import { ResponseType } from '../types/response';
+import { ResponseTypeDefault } from '../types/response';
 
-export const formatResponse = (res: Response, data?: any, message?: string, success?: boolean): void => {
-  const response: ResponseType = {
-    success: success ?? true,
-    message: message ?? null,
-    data: null,
-  };
+export const formatResponse = <T>(res: Response, data?: T, message?: string, success?: boolean): void => {
+  let response = ResponseTypeDefault as ResponseType<T>;
 
   if (data) {
-    response.data = data;
+    response = {
+      ...response,
+      data,
+    } as ResponseType<T>;
   }
 
   res.json(response);

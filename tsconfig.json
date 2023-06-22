@@ -8,11 +8,14 @@
     "noImplicitAny": true,
     /* Module Resolution Options */
     "moduleResolution": "node",
-    "baseUrl": "./src",
+    "baseUrl": "src",
     "esModuleInterop": true,
     /* Advanced Options */
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@/*": ["./*"]
+    }
   },
-  "exclude": ["node_modules", "dist", "src/prisma"]
+  "exclude": ["node_modules", "dist", "prisma"]
 }
