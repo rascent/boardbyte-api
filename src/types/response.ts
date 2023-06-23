@@ -1,5 +1,5 @@
 export const ResponseTypeDefault: ResponseType<null> = {
-  success: false,
+  success: true,
   message: null,
   data: null,
 };
