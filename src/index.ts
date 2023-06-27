@@ -14,6 +14,10 @@ const startServer = async () => {
     console.log(`App listening on port ${PORT}`);
   });
 
+  app.get('/', (req, res) => {
+    res.send('Hello World');
+  });
+
   app.use('/api', handleRoutes());
 
   app.use(errorHandler);
