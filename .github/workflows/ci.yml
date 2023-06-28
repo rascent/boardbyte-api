@@ -25,5 +25,5 @@ jobs:
             source ~/.nvm/nvm.sh
             cd ${{ env.DIR }}
             git pull origin main
-            yarn
+            yarn && yarn build
             pm2 delete boardbyte >> /dev/null && pm2 start dist/index.js --name boardbyte
