@@ -1,0 +1,16 @@
+[
+  {
+    "name": "server-0",
+    "host": "128.199.139.191",
+    "username": "root",
+    "port": "22",
+    "path": "/var/www/html/boardbyte-api"
+  },
+  {
+    "name": "server-1",
+    "host": "128.199.141.194",
+    "username": "root",
+    "port": "22",
+    "path": "/var/www/html/boardbyte-api"
+  }
+]

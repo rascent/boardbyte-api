@@ -7,23 +7,91 @@ on:
     branches: ['main']
 
 env:
-  DIR: '/var/www/html/boardbyte-api'
+  ARTIFACT_NAME: app-build
 
 jobs:
-  build:
+  build-artifact:
     runs-on: ubuntu-latest
+    outputs:
+      servers: ${{ steps.export-deployment-matrix.outputs.servers }}
     steps:
-      - name: executing remote ssh commands
-        uses: appleboy/ssh-action@v0.1.8
+      - uses: actions/checkout@v3
+      - name: Create deployment artifact
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+        run: tar -czf "${GITHUB_SHA}".tar.gz --exclude=*.git --exclude=node_modules *
+
+      - name: Store artifact for distribution
+        uses: actions/upload-artifact@v3
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.PORT }}
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ github.sha }}.tar.gz
+
+      - name: Export deployment matrix
+        id: export-deployment-matrix
+        run: |
+          delimiter="$(openssl rand -hex 8)"
+          JSON="$(cat ./.github/workflows/servers.json)"
+          echo "servers<<${delimiter}" >> "${GITHUB_OUTPUT}"
+          echo "$JSON" >> "${GITHUB_OUTPUT}"
+          echo "${delimiter}" >> "${GITHUB_OUTPUT}"
+
+  deploy-matrix:
+    name: 'Deploy to: ${{ matrix.server.name }}'
+    needs: build-artifact
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        server: ${{ fromJson(needs.build-artifact.outputs.servers) }}
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+      - name: Upload
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ matrix.server.host }}
+          username: ${{ matrix.server.username }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ matrix.server.port }}
+          source: ${{ github.sha }}.tar.gz
+          target: ${{ matrix.server.path }}/artifacts
+      - name: Extract archive and create directories
+        uses: appleboy/ssh-action@master
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+        with:
+          host: ${{ matrix.server.host }}
+          username: ${{ matrix.server.username }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ matrix.server.port }}
+          envs: GITHUB_SHA
           script: |
-            export NVM_DIR=~/.nvm
-            source ~/.nvm/nvm.sh
-            cd ${{ env.DIR }}
-            git pull origin main
-            yarn && yarn build
-            pm2 delete boardbyte >> /dev/null && pm2 start dist/index.js --name boardbyte
+            mkdir -p "${{ matrix.server.path }}/releases/${GITHUB_SHA}"
+            tar xzf ${{ matrix.server.path }}/artifacts/${GITHUB_SHA}.tar.gz -C "${{ matrix.server.path }}/releases/${GITHUB_SHA}"
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+          BASE_PATH: ${{ matrix.server.path }}
+          RELEASE_PATH: ${{ matrix.server.path }}/releases/${{ github.sha }}
+          ACTIVE_RELEASE_PATH: ${{ matrix.server.path }}/current
+          DOT_ENV: ${{ secrets.DOT_ENV }}
+        with:
+          host: ${{ matrix.server.host }}
+          username: ${{ matrix.server.username }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ matrix.server.port }}
+          envs: GITHUB_SHA,BASE_PATH,RELEASE_PATH,ACTIVE_RELEASE_PATH,DOT_ENV
+          script: |
+            export NVM_DIR=~/.nvm && source ~/.nvm/nvm.sh
+
+            printf "%s" "$DOT_ENV" > "${BASE_PATH}/.env"
+            ln -s -f ${BASE_PATH}/.env $RELEASE_PATH
+            ln -s -n -f $RELEASE_PATH $ACTIVE_RELEASE_PATH
+
+            cd $ACTIVE_RELEASE_PATH
+            yarn install
+            npx prisma generate
+            yarn build
+            pm2 delete boardbyte >> /dev/null || true && pm2 start dist/index.js --name boardbyte
