@@ -11,20 +11,28 @@ const createSound = async (req: Request, res: Response, next: NextFunction) => {
 
     formatResponse(res, newSound);
   } catch (error: any) {
-    next(error.message);
+    next(error);
   }
 };
 
-const getAllSounds = async (req: Request, res: Response, next: NextFunction) => {
+const getAllSounds = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const allSounds = await prisma.sound.findMany();
     formatResponse(res, allSounds);
   } catch (error: any) {
-    next(error.message);
+    next(error);
   }
 };
 
-const getSoundById = async (req: Request, res: Response, next: NextFunction) => {
+const getSoundById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const singleSound = await prisma.sound.findUnique({
       where: {
@@ -34,7 +42,7 @@ const getSoundById = async (req: Request, res: Response, next: NextFunction) => 
 
     formatResponse(res, singleSound);
   } catch (error: any) {
-    next(error.message);
+    next(error);
   }
 };
 
@@ -48,7 +56,7 @@ const updateSound = async (req: Request, res: Response, next: NextFunction) => {
     });
     formatResponse(res, updatedSound);
   } catch (error: any) {
-    next(error.message);
+    next(error);
   }
 };
 
@@ -62,7 +70,7 @@ const deleteSound = async (req: Request, res: Response, next: NextFunction) => {
 
     formatResponse(res, null, 'Sound deleted');
   } catch (error: any) {
-    next(error.message);
+    next(error);
   }
 };
 
