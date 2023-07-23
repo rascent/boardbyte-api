@@ -35,10 +35,7 @@ const login = async (
       throw new Error('User registered with social login');
     }
 
-    const passwordMatch = await bcrypt.compare(
-      req.body.password,
-      user.password,
-    );
+    const passwordMatch = await bcrypt.compare(req.body.password, user.password);
 
     if (!passwordMatch) {
       res.status(401);

@@ -15,11 +15,7 @@ const createSound = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const getAllSounds = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const getAllSounds = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const allSounds = await prisma.sound.findMany();
     formatResponse(res, allSounds);
@@ -28,11 +24,7 @@ const getAllSounds = async (
   }
 };
 
-const getSoundById = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const getSoundById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const singleSound = await prisma.sound.findUnique({
       where: {
