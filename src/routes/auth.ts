@@ -40,10 +40,7 @@ const login = async (
       throw new Error('User registered with social login');
     }
 
-    const passwordMatch = await bcrypt.compare(
-      req.body.password,
-      user.password,
-    );
+    const passwordMatch = await bcrypt.compare(req.body.password, user.password);
 
     if (!passwordMatch) {
       res.status(401);
@@ -105,11 +102,7 @@ const logout = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const refreshToken = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const refreshToken = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await prisma.user.findUnique({
       where: {
@@ -151,11 +144,7 @@ const googleAuth = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const googleCallback = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const googleCallback = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { code, redirect_uri } = req.body;
     const { tokens } = await oauth2Client.getToken({
@@ -193,17 +182,12 @@ const googleCallback = async (
     const serverToken = createUserToken(tokenPayload);
     await updateRefreshToken(user.id, serverToken.refreshToken);
     formatResponse(res, { ...user, tokens: serverToken });
-
-    formatResponse(res, userInfo.data);
   } catch (error: any) {
     next(error);
   }
 };
 
-export const updateRefreshToken = async (
-  userId: string,
-  refreshToken?: string,
-) => {
+export const updateRefreshToken = async (userId: string, refreshToken?: string) => {
   await prisma.user.update({
     where: {
       id: userId,
