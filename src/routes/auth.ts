@@ -167,34 +167,32 @@ const googleCallback = async (
     let oauth2 = google.oauth2({ version: 'v2', auth: oauth2Client });
     let userInfo = await oauth2.userinfo.v2.me.get();
 
-    const user = await prisma.user.findUnique({
+    let user = await prisma.user.findUnique({
       where: {
         email: userInfo.data.email as string,
       },
     });
 
-    if (user) {
-      throw new Error('User already exists');
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          name: userInfo.data.name as string,
+          email: userInfo.data.email as string,
+          provider: 'google',
+          providerId: userInfo.data.id,
+          picture: userInfo.data.picture,
+        },
+      });
     }
 
-    const newUser = await prisma.user.create({
-      data: {
-        name: userInfo.data.name as string,
-        email: userInfo.data.email as string,
-        provider: 'google',
-        providerId: userInfo.data.id,
-        picture: userInfo.data.picture,
-      },
-    });
-
     const tokenPayload: Jwtpayload = {
-      id: newUser.id,
-      email: newUser.email,
-      role: newUser.role,
+      id: user.id,
+      email: user.email,
+      role: user.role,
     };
     const serverToken = createUserToken(tokenPayload);
-    await updateRefreshToken(newUser.id, serverToken.refreshToken);
-    formatResponse(res, { ...newUser, tokens: serverToken });
+    await updateRefreshToken(user.id, serverToken.refreshToken);
+    formatResponse(res, { ...user, tokens: serverToken });
 
     formatResponse(res, userInfo.data);
   } catch (error: any) {
