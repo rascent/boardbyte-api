@@ -19,7 +19,8 @@ export const jwtMiddleware = async (
 
     const token = authHeader.split(' ')[1];
 
-    const payload = verifyToken(token) as Jwtpayload;
+    const secret = res.locals.secret || process.env.JWT_SECRET;
+    const payload = verifyToken(token, secret as string) as Jwtpayload;
     if (!payload) {
       res.status(403);
       throw new Error('Forbidden');

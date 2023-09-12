@@ -8,6 +8,7 @@ import { oauth2Client } from '../util/oauth2Client';
 import { createUserToken } from '../util/jwt';
 import { jwtMiddleware } from '../middlewares/jwtMiddleware';
 import { Jwtpayload } from '../types/jwtPayload';
+import { jwtRefreshMiddlware } from '../middlewares/jwtRefreshMiddleware';
 
 const users = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -54,6 +55,7 @@ const login = async (
     };
     const tokens = createUserToken(tokenPayload);
     await updateRefreshToken(user.id, tokens.refreshToken);
+    user.refreshToken = tokens.refreshToken;
     formatResponse(res, { ...user, tokens });
   } catch (error: any) {
     next(error);
@@ -202,7 +204,7 @@ export const handlleAuthRoutes = () => {
   const router = Router();
 
   router.get('/users', users);
-  router.get('/refresh', jwtMiddleware, refreshToken);
+  router.get('/refresh', jwtRefreshMiddlware, refreshToken);
   router.post('/login', login);
   router.post('/register', register);
   router.post('/logout', jwtMiddleware, logout);
